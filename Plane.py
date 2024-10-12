@@ -29,20 +29,21 @@ class Plane:
         self.emergency = False
         self.image = pygame.image.load("plane.png")
         self.image = pygame.transform.scale(self.image, (20,20))
+        self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
 
-    def update(self):
-        delta_t = SIMULATED_TIME_STEP
-        r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(self.x - self.destination.x,
-                                                            self.y - self.destination.y))
-        if self.state == PlaneState.IN_FLIGHT:
-            self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
-            self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+    # def update(self):
+    #     delta_t = SIMULATED_TIME_STEP
+    #     r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(self.x - self.destination.x,
+    #                                                         self.y - self.destination.y))
+    #     if self.state == PlaneState.IN_FLIGHT:
+    #         self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
+    #         self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
 
-        if np.linalg.norm(self.x - self.destination.x,
-                        self.y - self.destination.y) < LANDING_DISTANCE:
-            state = PlaneState.LANDED
+    #     if np.linalg.norm(self.x - self.destination.x,
+    #                     self.y - self.destination.y) < LANDING_DISTANCE:
+    #         state = PlaneState.LANDED
 
-        return PlaneState
+    #     return PlaneState
 
     def emergency(self):
         if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:
@@ -60,7 +61,6 @@ class Plane:
 
 
     def draw(self, surface):
-        self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
         surface.blit(self.image, (self.xCoord, self.yCoord))
 
 
