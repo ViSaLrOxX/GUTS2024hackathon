@@ -5,15 +5,17 @@ from Airport import Airport
 from PlaneState import PlaneState
 import PlaneSizes
 import Time
+import pygame
+
 class Plane:
     def __init__(self, 
-                 destination: Airport, 
-                 size: Airport, 
-                 departure: Airport, 
-                 expectedArrival: Time, 
-                 delayedArrival: Time, 
-                 xCoord: float, yCoord: float, heading: float, v: float, 
-                 state: PlaneState):
+                 destination: Airport = None, 
+                 size: Airport = None, 
+                 departure: Airport = None, 
+                 expectedArrival: Time = Time(0,2), 
+                 delayedArrival: Time = Time(1, 3), 
+                 xCoord: float = 0, yCoord: float = 0, heading: float = 10, v: float = 2, 
+                 state: PlaneState = PlaneState.IN_FLIGHT):
         self.destination = destination
         self.size = size
         self.departure = departure
@@ -25,6 +27,7 @@ class Plane:
         self.heading = heading
         self.state = state
         self.emergency = False
+        self.image = pygame.image.load("plane.png")
 
     def update(self):
         delta_t = SIMULATED_TIME_STEP
@@ -50,5 +53,7 @@ class Plane:
 
 
 
+    def draw(self, surface):
+        surface.blit(self.image, (self.xCoord, self.yCoord))
 
 
