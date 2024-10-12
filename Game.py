@@ -76,9 +76,9 @@ class Game:
             details = airport.strip().split(':')
             airport = Game.total_airports.get(details[0])
             if airport:
-                mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
-                airport.pos = mercator
-                airport.pos = rescale_coordinates(mercator[0], mercator[1], 400,400)
+                # mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
+                # airport.pos = mercator
+                airport.pos = rescale_coordinates(float(details[9]), float(details[5]), 1000,700)
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.arrivals) for airport in self.airports]
