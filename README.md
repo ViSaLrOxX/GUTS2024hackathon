@@ -1,2 +1,2 @@
 # GUTS2024hackathon
-dythgs 2024 team 
+Do you have the GUTS Team 2024!!
