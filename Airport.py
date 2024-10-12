@@ -15,8 +15,6 @@ class Airport:
         self.max_capacity = max_capacity
         self.num_planes = num_planes
 
-    def add_connection():
-        pass
     def update(self, time):
         pass
 
