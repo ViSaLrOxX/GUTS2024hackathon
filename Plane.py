@@ -1,10 +1,11 @@
-from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE
+from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT
 import numpy as np
 import math
 from Airport import Airport
 from PlaneState import PlaneState
 import PlaneSizes
 from Time import Time
+from utils import to_pygame
 import pygame
 
 class Plane:
@@ -62,10 +63,11 @@ class Plane:
 
     def draw(self, surface): 
         if EUROPE:
-            surface.blit(self.image, (self.xCoord, self.yCoord))
+            surface.blit(self.image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
 
         else:
-            surface.blit(self.image, (self.xCoord, self.yCoord))
+
+            surface.blit(self.image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
 
 
 
