@@ -13,7 +13,7 @@ class Game:
     total_airports = {} 
 
     def __init__(self, seed=0):
-        self.airport_connections = {}
+        self.airports_used = set()
         self.time = Time(int(datetime.now().strftime('%H:%M:%S')[:2]), int(datetime.now().strftime('%H:%M:%S')[3:5]))
         self.bottom = [49.605015, -12.482707] # Bottom left coordinates
         self.top = [61.160198, 1.686227] # Top right coordinates
@@ -21,7 +21,9 @@ class Game:
         self.planes = []
         self.readFiles()
         self.seed = 0
-        self.generate_planes(NUM_PLANES)
+        self.generate_planes()
+        print("AAAA", self.airports_used)
+        print(len(self.planes))
 
         pygame.init()
         self.screen = pygame.display.set_mode((1000, 700))
@@ -42,7 +44,7 @@ class Game:
 
             self.screen.fill((255,255,255)) # fill the screen with white
             for plane in self.planes:
-                print(plane.xCoord,plane.yCoord)
+                # print(plane.xCoord,plane.yCoord)
                 plane.draw(self.screen) # draw the bird to the screen
             pygame.display.update() # update the screen
 
@@ -83,36 +85,23 @@ class Game:
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.arrivals) for airport in self.airports]
 
-    def assign_destination(self,departure_airport, i):
-        finished = False
-        while finished == False:
-            selection = random.choices(self.airports, self.weights, k=5)
-            for i in range(len(selection)):
-                if selection[i].num_planes < selection[i].max_capacity:
-                    self.planes[i].change_destination(selection[i])
-                    finished = True
-                    break
-
-    def generate_planes(self, num_planes):
-        planes_generated = 0
-        while planes_generated < num_planes:
-            selection = random.choice(self.airports)
-            if selection.num_planes < selection.max_capacity and (selection.pos):
-                
-                planes_generated += 1
-                self.planes.append(Plane(destination=None, 
-                                        departure=selection,
-                                        xCoord=selection.pos[0],
-                                        yCoord=selection.pos[1],
+    def generate_planes(self):
+        for count in range(1000):
+            while True:
+                selection = random.choices(self.airports, self.weights, k=1)
+                if selection[0] not in self.airports_used and not selection[0].pos:
+                    continue
+                break
+            self.airports_used.add(selection[0])
+            num_planes = 0
+            while num_planes < int(selection[0].departures):
+                self.planes.append(Plane(destination=None,
+                                        departure=selection[0],
+                                        xCoord=selection[0].pos[0],
+                                        yCoord=selection[0].pos[1],
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         ))
-                try:
-                    self.assign_destination(selection, -1)
-                except:
-                    print(selection.pos)
-                    print(selection.code)
-            if planes_generated >= num_planes:
-                break
+                num_planes +=1 
         
 
 if __name__ == "__main__":

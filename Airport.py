@@ -7,8 +7,8 @@ class Airport:
                  code: str):
         self.pos = None
         self.name = name
-        self.arrivals = arrivals
-        self.departures = departures
+        self.arrivals = min(int(arrivals),10)
+        self.departures = min(int(departures),10)
         self.max_capacity = 2 *int(self.departures )
         self.num_planes = 0
         self.code = code

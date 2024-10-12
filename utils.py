@@ -26,10 +26,10 @@ def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
 
     x = (longitude+180)*(mapWidth/360)
 
-    latRad = latitude*math.PI/180
+    latRad = latitude*math.pi/180
 
-    mercN = math.ln(math.tan((math.PI/4)+(latRad/2)))
-    y = (mapHeight/2)-(mapWidth*mercN/(2*math.PI))
+    mercN = math.log(math.tan((math.pi/4)+(latRad/2)))
+    y = (mapHeight/2)-(mapWidth*mercN/(2*math.pi))
 
     return x,y
 
