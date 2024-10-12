@@ -30,8 +30,12 @@ def wgs84_web_mercator_point(lon,lat):
     return x,y
 
 #AREA EXTENT COORDINATE WGS84
-lon_min,lat_min=-125.974,30.038
-lon_max,lat_max=-68.748,52.214
+lon_min,lat_min= -19.467443,-11.312829
+lon_max,lat_max= 59.507757,36.830325
+# -19.467443, 36.83032559604178
+# 59.507757, -11.312829
+#  55.820881, 23.501099
+# 35.052984, 22.246543
 
 #COORDINATE CONVERSION
 xy_min=wgs84_web_mercator_point(lon_min,lat_min)

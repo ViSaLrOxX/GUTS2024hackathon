@@ -1,18 +1,14 @@
 
 class Airport:
-    def __init__(self, 
-                 xCoord: float, 
-                 yCoord: float, 
+    def __init__(self,
                  arrivals: int, 
-                 departures: int, 
-                 max_capacity: int,
-                 total_flights: int):
-        self.x = xCoord
-        self.y = yCoord
+                 departures: int,
+                 name: str):
+        self.pos = None
+        self.name = name
         self.arrivals = arrivals
         self.departures = departures
-        self.max_capacity = max_capacity
-        self.total_flights = total_flights
+        self.max_capacity = 2 *self.departures 
 
     def update(self, time):
         pass
