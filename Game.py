@@ -3,7 +3,7 @@ from Time import Time
 import numpy as np
 import random
 import csv
-from utils import wgs84_web_mercator_point
+from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
 from config import NUM_PLANES, NUM_AIRPORTS
@@ -75,6 +75,7 @@ class Game:
             if airport:
                 mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
                 airport.pos = mercator
+                airport.pos = rescale_coordinates(mercator[0], mercator[1], 400,400)
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.arrivals) for airport in self.airports]
