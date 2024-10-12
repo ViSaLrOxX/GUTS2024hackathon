@@ -24,6 +24,7 @@ class Plane:
         self.v = v
         self.heading = heading
         self.state = state
+        self.emergency = False
 
     def update(self):
         delta_t = SIMULATED_TIME_STEP
@@ -32,6 +33,21 @@ class Plane:
         if self.state == PlaneState.IN_FLIGHT:
             self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
             self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+
+    def emergency(self):
+        if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:
+            self.emergency = True
+
+    def delay_check(self):
+        if self.state.IN_FLIGHT:
+            pass
+            # Math to check delay time
+
+    def change_destination(self):
+        if self.state.IN_FLIGHT:
+            pass
+            # How to calculate local airports?
+
 
 
 
