@@ -22,15 +22,16 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes()
-        print("AAAA", self.airports_used)
+        for airp in self.airports_used:
+            print(airp.name)
         print(len(self.planes))
 
         pygame.init()
         
         if EUROPE:
-            self.screen = pygame.display.set_mode((500, 350), pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode((500, 350))
         else:
-            self.screen = pygame.display.set_mode((1000, 700), pygame.FULLSCREEN)
+            self.screen = pygame.display.set_mode((1000, 700))
         self.clock = pygame.time.Clock()
 
         self.running = True
