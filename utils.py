@@ -33,5 +33,9 @@ def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
 
     return x,y
 
+def to_pygame(coords, height, obj_height):
+    """Convert an object's coords into pygame coordinates (lower-left of object => top left in pygame coords)."""
+    return (coords[0], height - coords[1] - obj_height)
+
 if __name__ == "__main__":
     print(rescale_coordinates(466, 333,1000,700))
