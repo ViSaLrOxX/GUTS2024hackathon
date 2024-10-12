@@ -68,6 +68,7 @@ class Game:
         while planes_generated < num_planes:
             selection = random.choice(self.airports)
             if selection.num_planes < selection.max_capacity and (selection.pos):
+                
                 planes_generated += 1
                 self.planes.append(Plane(destination=None, 
                                         departure=selection,
@@ -75,7 +76,11 @@ class Game:
                                         yCoord=selection.pos[1],
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         ))
-                self.assign_destination(selection, -1)
+                try:
+                    self.assign_destination(selection, -1)
+                except:
+                    print(selection.pos)
+                    print(selection.code)
             if planes_generated >= num_planes:
                 break
         
