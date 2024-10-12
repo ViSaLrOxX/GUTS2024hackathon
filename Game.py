@@ -27,7 +27,7 @@ class Game:
         print(len(self.planes))
 
         pygame.init()
-        
+
         if EUROPE:
             self.screen = pygame.display.set_mode((500, 350))
         else:
@@ -74,23 +74,32 @@ class Game:
             print("-------")
     
     def readFiles(self):
-        with open("airport_traffic_2016.csv", 'r', encoding="utf8") as file1:
-            file1.readline()
-            for line in file1.readlines()[:NUM_AIRPORTS]:
-                csvReader = line.split(",")
-                airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4])
-                Game.total_airports[csvReader[4]] = airport
+        if EUROPE:
+            with open("airport_traffic_2016.csv", 'r', encoding="utf8") as file1:
+                file1.readline()
+                for line in file1.readlines()[:NUM_AIRPORTS]:
+                    csvReader = line.split(",")
+                    airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4])
+                    Game.total_airports[csvReader[4]] = airport
 
-        with open('GlobalAirportDatabase.txt', 'r') as file2:
-            data = file2.readlines() 
-            random.shuffle(data)
-        for airport in data:
-            details = airport.strip().split(':')
-            airport = Game.total_airports.get(details[0])
-            if airport:
-                # mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
-                # airport.pos = mercator
-                airport.pos = rescale_coordinates(float(details[9]), float(details[5]), 1000,700)
+            with open('GlobalAirportDatabase.txt', 'r') as file2:
+                data = file2.readlines() 
+                random.shuffle(data)
+        
+            for airport in data:
+                details = airport.strip().split(':')
+                airport = Game.total_airports.get(details[0])
+                if airport:
+                    # mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
+                    # airport.pos = mercator
+                    airport.pos = rescale_coordinates(float(details[9]), float(details[5]), 1000,700)
+        else:
+            with open("world-airports.csv", 'r', encoding="utf8") as f:
+                data = f.readlines()
+                for line in file1.readlines()[:NUM_AIRPORTS]:
+                    csvReader = line.split(",")
+                    airport =  Airport(csvReader[21], csvReader[21], csvReader[3], csvReader[1])
+                    Game.total_airports[csvReader[4]] = airport
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.arrivals) for airport in self.airports]
