@@ -7,6 +7,7 @@ from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
 from config import NUM_PLANES, NUM_AIRPORTS
+import pygame
 class Game:
     total_airports = {} 
 
