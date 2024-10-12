@@ -4,7 +4,7 @@ import math
 from Airport import Airport
 from PlaneState import PlaneState
 import PlaneSizes
-import Time
+from Time import Time
 import pygame
 
 class Plane:
@@ -28,6 +28,7 @@ class Plane:
         self.state = state
         self.emergency = False
         self.image = pygame.image.load("plane.png")
+        self.image = pygame.transform.scale(self.image, (20,20))
 
     def update(self):
         delta_t = SIMULATED_TIME_STEP
@@ -54,6 +55,7 @@ class Plane:
 
 
     def draw(self, surface):
+        self.image = pygame.transform.scale(self.image, math.degrees(self.heading))
         surface.blit(self.image, (self.xCoord, self.yCoord))
 
 
