@@ -3,18 +3,20 @@ class Airport:
     def __init__(self, 
                  xCoord: float, 
                  yCoord: float, 
-                 arrivals: list, 
-                 departures: list, 
+                 arrivals: int, 
+                 departures: int, 
                  max_capacity: int,
-                 num_planes: int,
-                 airport_connections: dict):
+                 total_flights: int):
         self.x = xCoord
         self.y = yCoord
         self.arrivals = arrivals
         self.departures = departures
         self.max_capacity = max_capacity
-        self.num_planes = num_planes
+        self.total_flights = total_flights
 
     def update(self, time):
         pass
+
+    def getXcoord(self):
+        return self.x
 
