@@ -34,4 +34,4 @@ def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
     return x,y
 
 if __name__ == "__main__":
-    pass
+    print(rescale_coordinates(466, 333,1000,700))

@@ -62,7 +62,7 @@ class Plane:
 
     def draw(self, surface): 
         if EUROPE:
-            surface.blit(self.image, (self.xCoord-600, self.yCoord-400))
+            surface.blit(self.image, (self.xCoord, self.yCoord))
 
         else:
             surface.blit(self.image, (self.xCoord, self.yCoord))

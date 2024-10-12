@@ -6,13 +6,21 @@ import csv
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES, NUM_AIRPORTS, EUROPE
+from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT
 import pygame
+
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
 
 class Game:
     total_airports = {} 
 
     def __init__(self, seed=0):
+
         self.airports_used = set()
         self.time = Time(int(datetime.now().strftime('%H:%M:%S')[:2]), int(datetime.now().strftime('%H:%M:%S')[3:5]))
         self.bottom = [49.605015, -12.482707] # Bottom left coordinates
@@ -22,16 +30,16 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes()
-        for airp in self.airports_used:
-            print(airp.name)
-        print(len(self.planes))
+        print(self.planes)
 
         pygame.init()
 
+        self.BackGround = Background('Mercator_projection_Square.JPG', [0,0])
+
         if EUROPE:
-            self.screen = pygame.display.set_mode((500, 350))
+            self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         else:
-            self.screen = pygame.display.set_mode((1000, 700))
+            self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
 
         self.running = True
@@ -45,13 +53,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit() # quit the screen
                     self.running = False
+                if event.type == pygame.KEYDOWN:
+                    print(pygame.mouse.get_pos())
 
 
             self.screen.fill((255,255,255)) # fill the screen with white
+            self.screen.blit(self.BackGround.image, self.BackGround.rect)
             for airport in self.airports_used:
                 # print(plane.xCoord,plane.yCoord)
                 airport.draw(self.screen) # draw the airport to the screen
-                
+            
             for plane in self.planes:
                 # print(plane.xCoord,plane.yCoord)
                 plane.draw(self.screen) # draw the bird to the screen
@@ -90,22 +101,23 @@ class Game:
                 details = airport.strip().split(':')
                 airport = Game.total_airports.get(details[0])
                 if airport:
-                    # mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
-                    # airport.pos = mercator
-                    airport.pos = rescale_coordinates(float(details[9]), float(details[5]), 1000,700)
+                    mercator = rescale_coordinates(int(details[9]), int(details[5]),WIDTH,HEIGHT)
+                    airport.pos = mercator
+                    # airport.pos = rescale_coordinates(float(details[9]), float(details[5]), WIDTH,700)
+                    # airport.pos = rescale_coordinates(float(7.710992), float(45.865565), WIDTH,700)
         else:
             with open("world-airports.csv", 'r', encoding="utf8") as f:
-                data = f.readlines()
-                for line in file1.readlines()[:NUM_AIRPORTS]:
+                data = f.readlines()[1:]
+                for line in data[:NUM_AIRPORTS]:
                     csvReader = line.split(",")
-                    airport =  Airport(csvReader[21], csvReader[21], csvReader[3], csvReader[1])
+                    airport =  Airport(csvReader[-2][2:], csvReader[-2][:2], csvReader[3], csvReader[1])
                     Game.total_airports[csvReader[4]] = airport
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.arrivals) for airport in self.airports]
 
     def generate_planes(self):
-        for count in range(1000):
+        for count in range(100):
             while True:
                 selection = random.choices(self.airports, self.weights, k=1)
                 if selection[0] not in self.airports_used and not selection[0].pos:
