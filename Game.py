@@ -13,7 +13,6 @@ class Game:
     def __init__(self, seed=0):
         self.airport_connections = {}
         self.time = Time(int(datetime.now().strftime('%H:%M:%S')[:2]), int(datetime.now().strftime('%H:%M:%S')[3:5]))
-        print(self.time)
         self.bottom = [49.605015, -12.482707] # Bottom left coordinates
         self.top = [61.160198, 1.686227] # Top right coordinates
         self.airports = []
@@ -51,9 +50,8 @@ class Game:
                 mercator = wgs84_web_mercator_point(int(details[9]), int(details[5]))
                 airport.pos = mercator
 
-        print('AAA',Game.total_airports.values())
         self.airports = list(Game.total_airports.values())
-        self.weights = [airport.arrivals for airport in self.airports]
+        self.weights = [int(airport.arrivals) for airport in self.airports]
 
     def assign_destination(self,departure_airport, i):
         finished = False
@@ -61,13 +59,12 @@ class Game:
             selection = random.choices(self.airports, self.weights, k=5)
             for i in range(len(selection)):
                 if selection[i].num_planes < selection[i].max_capacity:
-                    self.planes[i].setDestination(selection[i])
+                    self.planes[i].change_destination(selection[i])
                     finished = True
                     break
 
     def generate_planes(self, num_planes):
         planes_generated = 0
-        print(type(self.airports))
         selection = random.choice(self.airports)
         if selection.num_planes < selection.max_capacity:
             self.planes.append(Plane(destination=None, 

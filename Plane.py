@@ -54,7 +54,7 @@ class Plane:
             # Math to check delay time
 
     def change_destination(self, airport: Airport):
-        heading = math.atan2((self.yCoord - airport.y), (self.xCoord - airport.x))
+        heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
         self.state = PlaneState.IN_FLIGHT
         self.v = 2
 
