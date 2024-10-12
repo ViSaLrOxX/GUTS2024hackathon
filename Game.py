@@ -1,8 +1,11 @@
 from datetime import datetime
 from Time import Time
+import numpy as np
+import random
 import csv
 from utils import wgs84_web_mercator_point
 from Airport import Airport
+from Plane import Plane
 
 class Game:
     total_airports = {} 
@@ -14,6 +17,8 @@ class Game:
         self.bottom = [49.605015, -12.482707] # Bottom left coordinates
         self.top = [61.160198, 1.686227] # Top right coordinates
         self.readFiles()
+        self.airports = list[Airport]
+        self.planes = list[Plane]
 
     def update(self):
         self.time.set_time(2, 1)

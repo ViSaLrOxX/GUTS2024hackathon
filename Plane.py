@@ -1,4 +1,4 @@
-from config import SIMULATED_TIME_STEP
+from config import SIMULATED_TIME_STEP, LANDING_DISTANCE
 import numpy as np
 import math
 from Airport import Airport
@@ -38,6 +38,12 @@ class Plane:
             self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
             self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
 
+        if np.linalg.norm(self.x - self.destination.x,
+                        self.y - self.destination.y) < LANDING_DISTANCE:
+            state = PlaneState.LANDED
+
+        return PlaneState
+
     def emergency(self):
         if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:
             self.emergency = True
@@ -47,11 +53,9 @@ class Plane:
             pass
             # Math to check delay time
 
-    def change_destination(self):
-        if self.state.IN_FLIGHT:
-            pass
-            # How to calculate local airports?
-
+    def change_destination(self, airport: Airport):
+        heading = math.atan2((self.yCoord - airport.y), (self.xCoord - airport.x))
+        self.state = PlaneState.IN_FLIGHT
 
 
     def draw(self, surface):
