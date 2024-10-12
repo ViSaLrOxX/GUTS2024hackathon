@@ -48,6 +48,10 @@ class Game:
 
 
             self.screen.fill((255,255,255)) # fill the screen with white
+            for airport in self.airports_used:
+                # print(plane.xCoord,plane.yCoord)
+                airport.draw(self.screen) # draw the airport to the screen
+                
             for plane in self.planes:
                 # print(plane.xCoord,plane.yCoord)
                 plane.draw(self.screen) # draw the bird to the screen

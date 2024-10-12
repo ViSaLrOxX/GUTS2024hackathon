@@ -1,4 +1,4 @@
-
+import pygame
 class Airport:
     def __init__(self,
                  arrivals: int, 
@@ -12,9 +12,15 @@ class Airport:
         self.max_capacity = 2 *int(self.departures )
         self.num_planes = 0
         self.code = code
+        self.image = pygame.image.load("airport.png")
+        self.image = pygame.transform.scale(self.image, (20,20))
+
     def update(self, time):
         pass
 
     def getCoord(self):
         print(self.x, self.y)
+
+    def draw(self, surface): 
+        surface.blit(self.image, (self.pos[0], self.pos[1]))
 
