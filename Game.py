@@ -6,7 +6,7 @@ import csv
 from utils import wgs84_web_mercator_point
 from Airport import Airport
 from Plane import Plane
-
+from config import NUM_PLANES
 class Game:
     total_airports = {} 
 
@@ -20,7 +20,8 @@ class Game:
         self.airports = list[Airport]
         self.planes = list[Plane]
         self.seed = 0
-
+        self.getAirports()
+        self.generate_planes(NUM_PLANES)
     def update(self):
         self.time.set_time(2, 1)
 
@@ -39,7 +40,7 @@ class Game:
             file1.readline()
             for line in file1.readlines():
                 csvReader = line.split(",")
-                airport =  Airport(csvReader[8], csvReader[7], csvReader[5])
+                airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4])
                 Game.total_airports[csvReader[4]] = airport
 
         with open('GlobalAirportDatabase.txt', 'r') as file2:
@@ -53,7 +54,7 @@ class Game:
         self.airports = list(self.total_airports.values())
         self.weights = [airport.total_flights for airport in self.airports]
 
-    def assign_destinations(self,departure_airport, i):
+    def assign_destination(self,departure_airport, i):
         finished = False
         while finished == False:
             selection = random.choices(self.airports, self.weights, k=5)
@@ -67,9 +68,16 @@ class Game:
         planes_generated = 0
         selection = random.choice(self.airports)
         if selection.num_planes < selection.max_capacity:
-            self.planes.append(Plane(destination=, ))
+            self.planes.append(Plane(destination=None, 
+                                     departure=selection,
+                                     xCoord=selection.pos[0],
+                                     yCoord=selection.pos[1],
+                                     expectedArrival=Time(self.time.get_time()).add_minutes(120),
+                                     ))
+            self.assign_destination(selection, -1)
+        
+
 if __name__ == "__main__":
     game1 = Game()
-    game1.getAirports()
 
 

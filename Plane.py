@@ -56,6 +56,7 @@ class Plane:
     def change_destination(self, airport: Airport):
         heading = math.atan2((self.yCoord - airport.y), (self.xCoord - airport.x))
         self.state = PlaneState.IN_FLIGHT
+        self.v = 2
 
 
     def draw(self, surface):
