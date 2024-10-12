@@ -15,6 +15,9 @@ class Time:
         self.hours = hours
         self.minutes = minutes
 
+    def get_time(self):
+        return (self.hours, self.minutes)
+    
     def __str__(self):
         return f"{self.hours}:{self.minutes}"
     
