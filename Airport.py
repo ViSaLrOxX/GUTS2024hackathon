@@ -17,6 +17,6 @@ class Airport:
     def update(self, time):
         pass
 
-    def getXcoord(self):
-        return self.x
+    def getCoord(self):
+        print(self.x, self.y)
 
