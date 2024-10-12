@@ -20,6 +20,32 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes(NUM_PLANES)
+
+        pygame.init()
+        self.screen = pygame.display.set_mode((1000, 700))
+        self.clock = pygame.time.Clock()
+
+        self.running = True
+
+        self.game_loop()
+
+    def game_loop(self):
+        while self.running:
+            # handle every event since the last frame.
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit() # quit the screen
+                    self.running = False
+
+
+            self.screen.fill((255,255,255)) # fill the screen with white
+            for plane in self.planes:
+                print(plane.xCoord,plane.yCoord)
+                plane.draw(self.screen) # draw the bird to the screen
+            pygame.display.update() # update the screen
+
+            self.clock.tick(40)
+        
     def update(self):
         self.time.set_time(2, 1)
 
