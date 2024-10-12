@@ -5,13 +5,14 @@ class Airport:
                  yCoord: float, 
                  arrivals: list, 
                  departures: list, 
-                 max_capacity: int):
+                 max_capacity: int,
+                 num_planes: int):
         self.x = xCoord
         self.y = yCoord
         self.arrivals = arrivals
         self.departures = departures
         self.max_capacity = max_capacity
-        self.game
+        self.num_planes = num_planes
     def update(self, time):
         pass
 
