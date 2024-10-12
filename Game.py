@@ -73,6 +73,8 @@ class Game:
         
     def update(self):
         self.time.set_time(2, 1)
+        for i in range(len(self.planes)):
+            self.planes[i].update()
 
     def add_connection(self, main: Airport, other:Airport, weight: float):
         self.airport_connections[main][other] = weight
@@ -132,8 +134,10 @@ class Game:
                                         yCoord=selection[0].pos[1],
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         ))
+                
                 num_planes +=1 
-        
+    def set_destination(self):
+        while 
 
 if __name__ == "__main__":
     game1 = Game()

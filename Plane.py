@@ -15,7 +15,7 @@ class Plane:
                  departure: Airport = None, 
                  expectedArrival: Time = Time(0,2), 
                  delayedArrival: Time = Time(1, 3), 
-                 xCoord: float = 0, yCoord: float = 0, heading: float = 10, v: float = 2, 
+                 xCoord: float = 0, yCoord: float = 0, heading: float = 10, v: float = 100, 
                  state: PlaneState = PlaneState.IN_FLIGHT):
         self.destination = destination
         self.size = size
@@ -32,19 +32,19 @@ class Plane:
         self.image = pygame.transform.scale(self.image, (20,20))
         self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
 
-    # def update(self):
-    #     delta_t = SIMULATED_TIME_STEP
-    #     r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(self.x - self.destination.x,
-    #                                                         self.y - self.destination.y))
-    #     if self.state == PlaneState.IN_FLIGHT:
-    #         self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
-    #         self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+    def update(self):
+        delta_t = SIMULATED_TIME_STEP
+        r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(self.xCoord - self.destination.pos[0],
+                                                            self.yCoord - self.destination.pos[1]))
+        if self.state == PlaneState.IN_FLIGHT:
+            self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
+            self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
 
-    #     if np.linalg.norm(self.x - self.destination.x,
-    #                     self.y - self.destination.y) < LANDING_DISTANCE:
-    #         state = PlaneState.LANDED
+        if np.linalg.norm(self.x - self.destination.pos[0],
+                        self.y - self.destination.pos[1]) < LANDING_DISTANCE:
+            state = PlaneState.LANDED
 
-    #     return PlaneState
+        return PlaneState
 
     def emergency(self):
         if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:

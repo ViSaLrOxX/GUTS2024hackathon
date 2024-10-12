@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from decimal import Decimal
 #POINT
 
 
@@ -24,6 +25,9 @@ xy_max=wgs84_web_mercator_point(lon_max,lat_max)
 
 def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
 
+    longitude = Decimal(longitude)
+    latitude = Decimal(latitude)
+    
     x = (longitude+180)*(mapWidth/360)
 
     latRad = latitude*math.pi/180
