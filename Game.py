@@ -6,7 +6,7 @@ import csv
 from utils import wgs84_web_mercator_point
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES
+from config import NUM_PLANES, NUM_AIRPORTS
 class Game:
     total_airports = {} 
 
@@ -36,7 +36,7 @@ class Game:
     def readFiles(self):
         with open("airport_traffic_2016.csv", 'r', encoding="utf8") as file1:
             file1.readline()
-            for line in file1.readlines():
+            for line in file1.readlines()[:NUM_AIRPORTS]:
                 csvReader = line.split(",")
                 airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4])
                 Game.total_airports[csvReader[4]] = airport
@@ -65,15 +65,19 @@ class Game:
 
     def generate_planes(self, num_planes):
         planes_generated = 0
-        selection = random.choice(self.airports)
-        if selection.num_planes < selection.max_capacity:
-            self.planes.append(Plane(destination=None, 
-                                     departure=selection,
-                                     xCoord=selection.pos[0],
-                                     yCoord=selection.pos[1],
-                                     expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
-                                     ))
-            self.assign_destination(selection, -1)
+        while planes_generated < num_planes:
+            selection = random.choice(self.airports)
+            if selection.num_planes < selection.max_capacity and (selection.pos):
+                planes_generated += 1
+                self.planes.append(Plane(destination=None, 
+                                        departure=selection,
+                                        xCoord=selection.pos[0],
+                                        yCoord=selection.pos[1],
+                                        expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
+                                        ))
+                self.assign_destination(selection, -1)
+            if planes_generated >= num_planes:
+                break
         
 
 if __name__ == "__main__":
