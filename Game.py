@@ -8,6 +8,7 @@ from Airport import Airport
 from Plane import Plane
 from config import NUM_PLANES, NUM_AIRPORTS
 import pygame
+
 class Game:
     total_airports = {} 
 
@@ -70,6 +71,7 @@ class Game:
 
         with open('GlobalAirportDatabase.txt', 'r') as file2:
             data = file2.readlines() 
+            random.shuffle(data)
         for airport in data:
             details = airport.strip().split(':')
             airport = Game.total_airports.get(details[0])
