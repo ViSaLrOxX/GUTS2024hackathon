@@ -55,7 +55,7 @@ class Plane:
 
 
     def draw(self, surface):
-        self.image = pygame.transform.scale(self.image, math.degrees(self.heading))
+        self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
         surface.blit(self.image, (self.xCoord, self.yCoord))
 
 
