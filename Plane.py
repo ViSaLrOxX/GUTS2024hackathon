@@ -1,4 +1,4 @@
-from config import SIMULATED_TIME_STEP, LANDING_DISTANCE
+from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE
 import numpy as np
 import math
 from Airport import Airport
@@ -60,7 +60,11 @@ class Plane:
         self.v = 2
 
 
-    def draw(self, surface):
-        surface.blit(self.image, (self.xCoord, self.yCoord))
+    def draw(self, surface): 
+        if EUROPE:
+            surface.blit(self.image, (self.xCoord/2, self.yCoord/2))
+        else:
+            surface.blit(self.image, (self.xCoord, self.yCoord))
+
 
 

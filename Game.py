@@ -6,7 +6,7 @@ import csv
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES, NUM_AIRPORTS
+from config import NUM_PLANES, NUM_AIRPORTS, EUROPE
 import pygame
 
 class Game:
@@ -26,7 +26,11 @@ class Game:
         print(len(self.planes))
 
         pygame.init()
-        self.screen = pygame.display.set_mode((1000, 700))
+        
+        if EUROPE:
+            self.screen = pygame.display.set_mode((500, 350), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((1000, 700), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
 
         self.running = True
@@ -46,6 +50,7 @@ class Game:
             for plane in self.planes:
                 # print(plane.xCoord,plane.yCoord)
                 plane.draw(self.screen) # draw the bird to the screen
+            
             pygame.display.update() # update the screen
 
             self.clock.tick(40)
