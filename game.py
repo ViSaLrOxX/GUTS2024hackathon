@@ -1,7 +1,7 @@
 import datetime
 import csv
 
-class game:
+class Game:
 
     def __init__(self):
         f = open("data.csv", "r")
