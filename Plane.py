@@ -32,6 +32,7 @@ class Plane:
         self.state = state
         self.emergency = False
         self.image = pygame.image.load("plane.png")
+        #self.image.set_alpha(0)
         self.image = pygame.transform.scale(self.image, (20,20))
         self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
 
@@ -79,13 +80,10 @@ class Plane:
             self.v = 2
 
 
-    def draw(self, surface): 
-        if EUROPE:
-            surface.blit(self.image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
-
-        else:
-
-            surface.blit(self.image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
+    def draw(self, surface):
+        rot_image = pygame.transform.rotate(self.image, math.degrees(self.heading))
+        #rot_image.set_alpha(0)
+        surface.blit(rot_image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
 
 
 

@@ -78,8 +78,7 @@ class Game:
                             movement = True
                             self.typhoon.fill((255,255,255,255),None, pygame.BLEND_RGB_MULT)
                             self.typhoon.set_alpha(255)
-
-
+                            
             if movement:
                 self.update()
 
@@ -90,10 +89,10 @@ class Game:
                 # print(plane.xCoord,plane.yCoord)
                 airport.draw(self.screen) # draw the airport to the screen
             
-            for plane in self.planes:
-                # print(plane.xCoord,plane.yCoord)
-                plane.draw(self.screen) # draw the bird to the screen
-
+            if movement:
+                for plane in self.planes:
+                    # print(plane.xCoord,plane.yCoord)
+                    plane.draw(self.screen) # draw the bird to the screen
 
             for pos in self.typhoon_positions:
                 self.screen.blit(self.typhoon.convert_alpha(), pos)
