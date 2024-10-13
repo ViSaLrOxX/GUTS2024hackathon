@@ -4,8 +4,9 @@ from Continents import Continent
 import numpy as np
 import random
 import csv
+from Typhoon import Typhoon
 from PlaneState import PlaneState
-from utils import wgs84_web_mercator_point, rescale_coordinates
+from utils import wgs84_web_mercator_point, rescale_coordinates, distance
 from Airport import Airport
 from Plane import Plane
 from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT, FPS, CONTINENT_RELATIONSHIPS, MAX_TRIES
@@ -38,6 +39,7 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes()
+        self.typhoons = []
         self.typhoon = pygame.image.load("spiral2.png")
         self.typhoon = pygame.transform.scale(self.typhoon, (50, 50))
         self.typhoon.fill((255,255,255,1),None, pygame.BLEND_RGB_MULT)
@@ -73,11 +75,9 @@ class Game:
                     if movement == False:
                         mouse_pos = pygame.mouse.get_pos()
                         adjusted_pos = (mouse_pos[0] - self.typhoon.get_width() // 2, mouse_pos[1] - self.typhoon.get_height() // 2)
-                        self.typhoon_positions.append(adjusted_pos)
-                        if len(self.typhoon_positions) == 3:
+                        self.typhoons.append(Typhoon(adjusted_pos))
+                        if len(self.typhoons) == 3:
                             movement = True
-                            self.typhoon.fill((255,255,255,255),None, pygame.BLEND_RGB_MULT)
-                            self.typhoon.set_alpha(255)
                             
             if movement:
                 self.update()
@@ -94,11 +94,11 @@ class Game:
                     # print(plane.xCoord,plane.yCoord)
                     plane.draw(self.screen) # draw the bird to the screen
 
-            for pos in self.typhoon_positions:
-                self.screen.blit(self.typhoon.convert_alpha(), pos)
+            for typhoon in self.typhoons:
+                self.screen.blit(typhoon.image, typhoon.pos)
                 self.typhoon = pygame.transform.rotate(self.typhoon, 90)
 
-                x = self.typhoon.get_rect()
+                x = typhoon.image.get_rect()
                 
                 for airport in self.airports_used:
                     y = airport.getImage().get_rect()
@@ -214,8 +214,18 @@ class Game:
         #print(len(self.airports_used), num_planes, total_planes)
 
     def redirect(self,plane,airport):
-        pass
+        rects = []
 
+    def get_nearest_airports(plane: Plane):
+        nearest = [(distance((plane.xCoord,plane.yCoord), 
+                             Game.continents[plane.destination][i].pos), i) for i in range(len(Game.continents[plane.destination])) 
+                             if Game.continents[plane.destination][i] == AirportState.AVAILABLE]
+        nearest.sort(key= lambda x: x[0])
+        if len(nearest) > 0:
+            return nearest
+        else:
+            return None
+        
     def get_eligible_airport(self):
         #print(Game.continents)
         continent = random.choices(list(CONTINENT_RELATIONSHIPS.keys()), weights=[CONTINENT_RELATIONSHIPS[key][key] for key in CONTINENT_RELATIONSHIPS])

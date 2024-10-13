@@ -42,5 +42,9 @@ def to_pygame(coords, height, obj_height):
     # return (coords[0], height - coords[1])
     return coords
 
+def distance(coords1, coords2):
+    return float(np.linalg.norm(coords1[0] - coords2[0], coords1[1] - coords2[1]))
+
+
 if __name__ == "__main__":
     print(rescale_coordinates(466, 333,1000,1000))
