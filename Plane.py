@@ -8,8 +8,11 @@ import PlaneSizes
 from Time import Time
 from utils import to_pygame
 import pygame
+import random
 
 class Plane:
+    accum_delay = 0
+    crashes = 0
     def __init__(self,
                  game, 
                  destination: Airport = None, 
@@ -32,9 +35,24 @@ class Plane:
         self.state = state
         self.emergency = False
         self.image = pygame.image.load("plane.png")
-        #self.image.set_alpha(0)
         self.image = pygame.transform.scale(self.image, (20,20))
         self.image = pygame.transform.rotate(self.image, math.degrees(self.heading))
+        self.delay = 0
+        self.was_redirected = False
+        self.time_expected = self.time_to_reach()
+         # self.delayedArrival = (self.time_expected + 1200*60)* SIMULATED_TIME_STEP
+        self.time_up = 0
+  
+    def time_to_reach(self):
+        try:
+            distance = math.sqrt((self.xCoord-self.destination.pos[0])**2+ (self.yCoord-self.destination.pos[1])**2)
+            time_taken = distance/self.v
+            return time_taken *100000
+        except:
+            for i in range(len(self.game.planes)):
+                if self.game.planes[i] == self:
+                    del self.game.planes[i]
+                    del self
 
     def update(self):
         delta_t = SIMULATED_TIME_STEP
@@ -42,7 +60,7 @@ class Plane:
             r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(np.array([self.xCoord - self.destination.pos[0],
                                                         self.yCoord - self.destination.pos[1]])))
         except:
-            print(self.destination)
+            del self
     
         if self.state == PlaneState.IN_FLIGHT:
             self.xCoord += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
@@ -63,6 +81,12 @@ class Plane:
     def emergency(self):
         if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:
             self.emergency = True
+            self.state = PlaneState.EMERGENCY
+            temp = random.randint(0, 100)
+            if temp>=40:
+                Plane.crashes +=1
+            Plane.accum_delay += (self.time_up - self.time_expected)
+            # del self
 
     def delay_check(self):
         if self.state.IN_FLIGHT:
@@ -73,7 +97,7 @@ class Plane:
         if state == PlaneState.EMERGENCY and (len(airport.arrivals)> airport.max_capacity or airport.state == AirportState.EMERGENCY):
             self.game.redirect(self,airport)
         else:
-            self.heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
+            self.heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0])) + math.pi/2
             self.destination = airport
             airport.arrivals.append(self)
             self.state = PlaneState.IN_FLIGHT

@@ -50,6 +50,9 @@ class Game:
         pygame.init()
 
         self.BackGround = Background('Mercator_projection_Square.JPG', [0,0])
+        self.font  =pygame.font.SysFont('Comic Sans MS', 30)
+        self.text_surface1 = self.font.render('Crashed Planes:' + str(Plane.crashes), False, (255,255,255))
+        self.text_surface2 = self.font.render('Time wasted with delays:' + str(Plane.accum_delay), False, (255,255,255))
 
         if EUROPE:
             self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -86,7 +89,8 @@ class Game:
 
             self.screen.fill((255,255,255)) # fill the screen with white
             self.screen.blit(self.BackGround.image, self.BackGround.rect)
-
+            self.screen.blit(self.text_surface1, (711, 754))
+            self.screen.blit(self.text_surface2, (711, 790))
             for airport in self.airports_used:
                 # print(plane.xCoord,plane.yCoord)
                 airport.draw(self.screen) # draw the airport to the screen
@@ -169,6 +173,8 @@ class Game:
                         airport =  Airport(flights_planned, csvReader[3], csvReader[1], AirportState.AVAILABLE, csvReader[7])
                         mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
                         airport.pos = mercator
+                        if airport.pos == None or None in airport.pos:
+                            break
                         assert(airport.continent in list(CONTINENT_RELATIONSHIPS.keys()))
                         valid_airports_read+=1
                         Game.total_airports[csvReader[4]] = airport
@@ -239,8 +245,9 @@ class Game:
         while not found and tries < MAX_TRIES:
             
             candidate = random.choices(Game.continents[continent], weights=[airport.departures for airport in Game.continents[continent]])
+
             candidate = candidate[0]
-            #print(candidate.name)
+
             
             if candidate and candidate.state == AirportState.AVAILABLE:
                 found = True
