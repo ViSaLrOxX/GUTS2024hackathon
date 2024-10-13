@@ -160,7 +160,7 @@ class Game:
                     if valid_airports_read >= NUM_PLANES:
                         break
                     csvReader = line.split(",")
-                    print(csvReader)
+                    #print(csvReader)
                     flights_planned = int(str(csvReader[-2])[:2])//4+2
                     try:
                         airport =  Airport(flights_planned, csvReader[3], csvReader[1], AirportState.AVAILABLE, csvReader[7])
@@ -180,7 +180,7 @@ class Game:
         self.weights = [int(airport.departures) for airport in self.airports]
 
     def generate_planes(self):
-        print(self.airports)
+        #print(self.airports)
         for count in range(NUM_AIRPORTS):
             while True:
                 selection = random.choices(self.airports, self.weights, k=1)
@@ -188,7 +188,7 @@ class Game:
                     break
                 
             self.airports_used.add(selection[0])
-            print(self.airports_used)
+            #print(self.airports_used)
             Game.continents[selection[0].continent].append(selection[0])
 
             num_planes = 0
@@ -212,13 +212,13 @@ class Game:
         for plane in self.planes:
             plane.change_destination(self.get_eligible_airport(), PlaneState.IN_FLIGHT)
             
-        print(len(self.airports_used), num_planes, total_planes)
+        #print(len(self.airports_used), num_planes, total_planes)
 
     def redirect(self,plane,airport):
         pass
 
     def get_eligible_airport(self):
-        print(Game.continents)
+        #print(Game.continents)
         continent = random.choices(list(CONTINENT_RELATIONSHIPS.keys()), weights=[CONTINENT_RELATIONSHIPS[key][key] for key in CONTINENT_RELATIONSHIPS])
         continent = continent[0]
         found = False
@@ -227,7 +227,7 @@ class Game:
             
             candidate = random.choices(Game.continents[continent], weights=[airport.departures for airport in Game.continents[continent]])
             candidate = candidate[0]
-            print(candidate.name)
+            #print(candidate.name)
             
             if candidate and candidate.state == AirportState.AVAILABLE:
                 found = True
