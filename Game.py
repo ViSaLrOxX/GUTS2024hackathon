@@ -6,7 +6,7 @@ import csv
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT
+from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT
 import pygame
 
 class Background(pygame.sprite.Sprite):
@@ -132,6 +132,7 @@ class Game:
                                         departure=selection[0],
                                         xCoord=selection[0].pos[0],
                                         yCoord=selection[0].pos[1],
+                                        v = 100 if MOVEMENT else 0,
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         ))
                 
