@@ -1,4 +1,4 @@
-from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT
+from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT, WIDTH
 import numpy as np
 import math
 from Airport import Airport
@@ -43,6 +43,10 @@ class Plane:
         if self.state == PlaneState.IN_FLIGHT:
             self.xCoord += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
             self.yCoord += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+
+            self.xCoord %= WIDTH
+            self.yCoord %= HEIGHT
+            
         try:
             if np.linalg.norm(np.array([self.xCoord - self.destination.pos[0],
                                     self.yCoord - self.destination.pos[1]])) < LANDING_DISTANCE:
