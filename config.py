@@ -12,6 +12,7 @@ EUROPE = False
 MOVEMENT = False
 WIDTH = 1200
 HEIGHT = 1200
+MAX_TRIES = 20
 CONTINENT_RELATIONSHIPS = {Continent.EU: {Continent.EU: 17,
                                           Continent.AF:2.8,
                                           Continent.PO:0.5,

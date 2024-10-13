@@ -7,7 +7,7 @@ import csv
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT, FPS
+from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT, FPS, CONTINENT_RELATIONSHIPS, MAX_TRIES
 import pygame
 
 class Background(pygame.sprite.Sprite):
@@ -188,13 +188,20 @@ class Game:
                                         v = 0.5 if MOVEMENT else 0,
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         )
-                plane.change_destination(random.choice(list(self.airports_used)))
+                
+                plane.change_destination(self.get_eligible_airport())
                 self.planes.append(plane)
                 
                 num_planes +=1 
         print(len(self.airports_used), num_planes, total_planes)
 
-
+    def get_eligible_airport(self):
+        continent = random.choices(list(CONTINENT_RELATIONSHIPS.keys()), weights=[CONTINENT_RELATIONSHIPS[key][key] for key in CONTINENT_RELATIONSHIPS])
+        continent = continent[0]
+        found = False
+        tries = 0
+        while not found and tries < MAX_TRIES:
+            candidate = random.choices(Game.continents[continent], weights=[airport.flights_planned for airport in Game.continents[continent]])
 if __name__ == "__main__":
     game1 = Game()
 
