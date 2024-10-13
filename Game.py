@@ -128,7 +128,7 @@ class Game:
             self.airports_used.add(selection[0])
             num_planes = 0
             while num_planes < int(selection[0].departures):
-                self.planes.append(Plane(destination=None,
+                self.planes.append(Plane(destination=random.choice(list(Game.total_airports.values())),
                                         departure=selection[0],
                                         xCoord=selection[0].pos[0],
                                         yCoord=selection[0].pos[1],
@@ -136,8 +136,7 @@ class Game:
                                         ))
                 
                 num_planes +=1 
-    def set_destination(self):
-        while 
+
 
 if __name__ == "__main__":
     game1 = Game()
