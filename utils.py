@@ -25,9 +25,9 @@ xy_max=wgs84_web_mercator_point(lon_max,lat_max)
 
 def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
 
-    longitude = longitude
-    latitude = latitude
-
+    # longitude = Decimal(longitude)
+    # latitude = Decimal(latitude)
+    
     x = (longitude+180)*(mapWidth/360)
 
     latRad = latitude*math.pi/180
@@ -39,7 +39,8 @@ def rescale_coordinates(longitude, latitude, mapWidth, mapHeight):
 
 def to_pygame(coords, height, obj_height):
     """Convert an object's coords into pygame coordinates (lower-left of object => top left in pygame coords)."""
-    return (coords[0], height - coords[1] - obj_height)
+    # return (coords[0], height - coords[1])
+    return coords
 
 if __name__ == "__main__":
-    print(rescale_coordinates(466, 333,1000,700))
+    print(rescale_coordinates(466, 333,1000,1000))

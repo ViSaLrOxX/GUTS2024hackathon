@@ -2,15 +2,14 @@ import pygame
 from AirportState import AirportState
 class Airport:
     def __init__(self,
-                 arrivals: int, 
                  departures: int,
                  name: str,
                  code: str,
                  state: AirportState = AirportState.AVAILABLE):
         self.pos = None
         self.name = name
-        print(arrivals)
-        self.arrivals = min(int(arrivals),10)
+        # print(arrivals)
+        self.arrivals = []
         self.departures = min(int(departures),10)
         self.max_capacity = 2 *int(self.departures)
         self.num_planes = 0
