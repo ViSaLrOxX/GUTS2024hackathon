@@ -30,6 +30,11 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes()
+        self.typhoon = pygame.image.load("spiral2.png")
+        self.typhoon = pygame.transform.scale(self.typhoon, (50, 50))
+        self.typhoon.fill((255,255,255,1),None, pygame.BLEND_RGB_MULT)
+        self.typhoon.set_alpha(128)
+        self.typhoon_positions = []
         # print([airport.name for airport in self.airports])
 
         pygame.init()
@@ -47,6 +52,7 @@ class Game:
         self.game_loop()
 
     def game_loop(self):
+        movement = MOVEMENT
         while self.running:
             # handle every event since the last frame.
             for event in pygame.event.get():
@@ -55,13 +61,23 @@ class Game:
                     self.running = False
                 if event.type == pygame.KEYDOWN:
                     print(pygame.mouse.get_pos())
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if movement == False:
+                        mouse_pos = pygame.mouse.get_pos()
+                        adjusted_pos = (mouse_pos[0] - self.typhoon.get_width() // 2, mouse_pos[1] - self.typhoon.get_height() // 2)
+                        self.typhoon_positions.append(adjusted_pos)
+                        if len(self.typhoon_positions) == 3:
+                            movement = True
+                            self.typhoon.fill((255,255,255,255),None, pygame.BLEND_RGB_MULT)
+                            self.typhoon.set_alpha(255)
 
 
-            if MOVEMENT:
+            if movement:
                 self.update()
 
             self.screen.fill((255,255,255)) # fill the screen with white
             self.screen.blit(self.BackGround.image, self.BackGround.rect)
+
             for airport in self.airports_used:
                 # print(plane.xCoord,plane.yCoord)
                 airport.draw(self.screen) # draw the airport to the screen
@@ -69,6 +85,23 @@ class Game:
             for plane in self.planes:
                 # print(plane.xCoord,plane.yCoord)
                 plane.draw(self.screen) # draw the bird to the screen
+
+
+            for pos in self.typhoon_positions:
+                self.screen.blit(self.typhoon.convert_alpha(), pos)
+                self.typhoon = pygame.transform.rotate(self.typhoon, 90)
+
+                x = self.typhoon.get_rect()
+                
+                for airport in self.airports_used:
+                    y = airport.getImage().get_rect()
+                    collide = pygame.Rect.colliderect(x, y)
+                    if collide:
+                        airport.typhoon()
+                        #print(airport.process_request())
+                    else:
+                        airport.typhoonOver()
+
             
             pygame.display.update() # update the screen
 

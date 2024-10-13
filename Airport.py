@@ -15,6 +15,7 @@ class Airport:
         self.num_planes = 0
         self.code = code
         self.state = state
+        self.prev_state = None
         self.image = pygame.image.load("airport.png")
         self.image = pygame.transform.scale(self.image, (20,20))
 
@@ -30,3 +31,14 @@ class Airport:
     def draw(self, surface): 
         surface.blit(self.image, (self.pos[0], self.pos[1]))
 
+    def getImage(self):
+        return self.image
+    
+    def typhoon(self):
+        self.prev_state = self.state
+        self.state = AirportState.EMERGENCY
+        return
+
+    def typhoonOver(self):
+        self.state = self.prev_state
+        return
