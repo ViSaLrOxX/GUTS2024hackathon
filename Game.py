@@ -125,8 +125,9 @@ class Game:
     def update(self):
         self.time.set_time(2, 1)
         for i in range(len(self.planes)):
-            self.planes[i].update()
-
+            self.planes[i].update(i)
+        self.planes = [plane for plane in self.planes if plane != None]
+        
     def add_connection(self, main: Airport, other:Airport, weight: float):
         self.airport_connections[main][other] = weight
         pass
@@ -174,6 +175,7 @@ class Game:
                         mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
                         airport.pos = mercator
                         if airport.pos == None or None in airport.pos:
+                            print("broken pos")
                             break
                         assert(airport.continent in list(CONTINENT_RELATIONSHIPS.keys()))
                         valid_airports_read+=1
@@ -193,7 +195,7 @@ class Game:
         for count in range(NUM_AIRPORTS):
             while True:
                 selection = random.choices(self.airports, self.weights, k=1)
-                if selection[0] not in self.airports_used:
+                if selection[0] not in self.airports_used and selection:
                     break
                 
             self.airports_used.add(selection[0])
@@ -224,7 +226,9 @@ class Game:
         #print(len(self.airports_used), num_planes, total_planes)
 
     def redirect(self,plane,airport):
-        rects = []
+        plane.state = PlaneState.EMERGENCY
+        plane.destination = get_nearest_airports()
+        plane.destination.arrivals.append(plane)
 
     def get_nearest_airports(plane: Plane):
         nearest = [(distance((plane.xCoord,plane.yCoord), 
