@@ -7,7 +7,7 @@ class Airport:
                  name: str,
                  code: str,
                  state: AirportState = AirportState.AVAILABLE,
-                 continent: Continent = str):
+                 continent: Continent = "EU"):
         self.pos = None
         self.name = name
         # print(arrivals)

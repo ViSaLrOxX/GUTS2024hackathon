@@ -2,6 +2,7 @@ from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT, WIDTH
 import numpy as np
 import math
 from Airport import Airport
+from AirportState import AirportState
 from PlaneState import PlaneState
 import PlaneSizes
 from Time import Time
@@ -9,7 +10,8 @@ from utils import to_pygame
 import pygame
 
 class Plane:
-    def __init__(self, 
+    def __init__(self,
+                 game, 
                  destination: Airport = None, 
                  size: Airport = None, 
                  departure: Airport = None, 
@@ -17,6 +19,7 @@ class Plane:
                  delayedArrival: Time = Time(1, 3), 
                  xCoord: float = 0, yCoord: float = 0, heading: float = 10, v: float = 100, 
                  state: PlaneState = PlaneState.IN_FLIGHT):
+        self.game = game
         self.destination = destination
         self.size = size
         self.departure = departure
@@ -65,11 +68,15 @@ class Plane:
             pass
             # Math to check delay time
 
-    def change_destination(self, airport: Airport):
-        self.heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
-        self.destination = airport
-        self.state = PlaneState.IN_FLIGHT
-        self.v = 2
+    def change_destination(self, airport: Airport, state: PlaneState):
+        if state == PlaneState.EMERGENCY and (len(airport.arrivals)> airport.max_capacity or airport.state == AirportState.EMERGENCY):
+            self.game.redirect(self,airport)
+        else:
+            self.heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
+            self.destination = airport
+            airport.arrivals.append(self)
+            self.state = PlaneState.IN_FLIGHT
+            self.v = 2
 
 
     def draw(self, surface): 

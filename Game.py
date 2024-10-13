@@ -4,11 +4,13 @@ from Continents import Continent
 import numpy as np
 import random
 import csv
+from PlaneState import PlaneState
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
 from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT, FPS, CONTINENT_RELATIONSHIPS, MAX_TRIES
 import pygame
+from AirportState import AirportState
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
@@ -153,58 +155,83 @@ class Game:
             with open("world-airports.csv", 'r', encoding="utf8") as f:
                 data = f.readlines()[1:]
                 random.shuffle(data)
-                print(data)
-                for line in data[:NUM_AIRPORTS]:
+                valid_airports_read = 0
+                for line in data:
+                    if valid_airports_read >= NUM_PLANES:
+                        break
                     csvReader = line.split(",")
+                    print(csvReader)
                     flights_planned = int(str(csvReader[-2])[:2])//4+2
-                    airport =  Airport(flights_planned, csvReader[3], csvReader[1], csvReader[7])
                     try:
+                        airport =  Airport(flights_planned, csvReader[3], csvReader[1], AirportState.AVAILABLE, csvReader[7])
                         mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
                         airport.pos = mercator
+                        assert(airport.continent in list(CONTINENT_RELATIONSHIPS.keys()))
+                        valid_airports_read+=1
                         Game.total_airports[csvReader[4]] = airport
                     except:
                         pass
-                    Game.continents[airport.continent].append(airport)
+                    # if airport:
+                    #     Game.continents[airport.continent].append(airport)
+                
 
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.departures) for airport in self.airports]
 
     def generate_planes(self):
-        for count in range(81):
+        print(self.airports)
+        for count in range(NUM_AIRPORTS):
             while True:
                 selection = random.choices(self.airports, self.weights, k=1)
                 if selection[0] not in self.airports_used:
                     break
-                break
+                
             self.airports_used.add(selection[0])
+            print(self.airports_used)
+            Game.continents[selection[0].continent].append(selection[0])
+
             num_planes = 0
             total_planes = random.choice(range(selection[0].departures//2))
             while num_planes < total_planes:
-                plane = Plane(destination=None,
-                                        departure=selection[0],
-                                        xCoord=selection[0].pos[0],
-                                        yCoord=selection[0].pos[1],
-                                        v = 0.5 if MOVEMENT else 0,
-                                        expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
+                plane = Plane(
+                            game = self,
+                            destination=None,
+                            departure=selection[0],
+                            xCoord=selection[0].pos[0],
+                            yCoord=selection[0].pos[1],
+                            v = 0.5 if MOVEMENT else 0,
+                            expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
                                         )
                 
-                plane.change_destination(self.get_eligible_airport())
+                
                 self.planes.append(plane)
                 
                 num_planes +=1 
+
+        for plane in self.planes:
+            plane.change_destination(self.get_eligible_airport(), PlaneState.IN_FLIGHT)
+            
         print(len(self.airports_used), num_planes, total_planes)
 
+    def redirect(self,plane,airport):
+        pass
+
     def get_eligible_airport(self):
+        print(Game.continents)
         continent = random.choices(list(CONTINENT_RELATIONSHIPS.keys()), weights=[CONTINENT_RELATIONSHIPS[key][key] for key in CONTINENT_RELATIONSHIPS])
         continent = continent[0]
         found = False
         tries = 0
         while not found and tries < MAX_TRIES:
-            try:
-                candidate = random.choices(Game.continents[continent], weights=[airport.departures for airport in Game.continents[continent]])
-            except:
-                pass
+            
+            candidate = random.choices(Game.continents[continent], weights=[airport.departures for airport in Game.continents[continent]])
+            candidate = candidate[0]
+            print(candidate.name)
+            
+            if candidate and candidate.state == AirportState.AVAILABLE:
+                found = True
+                return candidate
             tries+= 1
 if __name__ == "__main__":
     game1 = Game()
