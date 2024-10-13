@@ -34,15 +34,21 @@ class Plane:
 
     def update(self):
         delta_t = SIMULATED_TIME_STEP
-        r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(self.xCoord - self.destination.pos[0],
-                                                            self.yCoord - self.destination.pos[1]))
+        try:
+            r = min(SIMULATED_TIME_STEP* self.v, np.linalg.norm(np.array([self.xCoord - self.destination.pos[0],
+                                                        self.yCoord - self.destination.pos[1]])))
+        except:
+            print(self.destination)
+    
         if self.state == PlaneState.IN_FLIGHT:
-            self.x += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
-            self.y += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
-
-        if np.linalg.norm(self.x - self.destination.pos[0],
-                        self.y - self.destination.pos[1]) < LANDING_DISTANCE:
-            state = PlaneState.LANDED
+            self.xCoord += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
+            self.yCoord += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+        try:
+            if np.linalg.norm(np.array([self.xCoord - self.destination.pos[0],
+                                    self.yCoord - self.destination.pos[1]])) < LANDING_DISTANCE:
+                state = PlaneState.LANDED
+        except:
+            print(self.destination)
 
         return PlaneState
 
@@ -56,7 +62,8 @@ class Plane:
             # Math to check delay time
 
     def change_destination(self, airport: Airport):
-        heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
+        self.heading = math.atan2((self.yCoord - airport.pos[1]), (self.xCoord - airport.pos[0]))
+        self.destination = airport
         self.state = PlaneState.IN_FLIGHT
         self.v = 2
 
