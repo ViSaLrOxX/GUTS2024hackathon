@@ -1,11 +1,13 @@
 import pygame
 from AirportState import AirportState
+from Continents import Continent
 class Airport:
     def __init__(self,
                  departures: int,
                  name: str,
                  code: str,
-                 state: AirportState = AirportState.AVAILABLE):
+                 state: AirportState = AirportState.AVAILABLE,
+                 continent: Continent = Continent.EU):
         self.pos = None
         self.name = name
         # print(arrivals)
@@ -18,6 +20,27 @@ class Airport:
         self.image = pygame.image.load("airport.png")
         self.image = pygame.transform.scale(self.image, (20,20))
 
+        self.continent = Continent.EU
+        match (continent):
+            case "EU":
+                self.continent = Continent.EU
+                return
+            case "AS":
+                self.continent = Continent.MEA
+                return
+            case "AF":
+                self.continent = Continent.AF
+                return
+            case "SA":
+                self.continent = Continent.SA
+                return
+            case "OC":
+                self.continent = Continent.PO
+                return
+            case "NA":
+                self.continent = Continent.NA
+                return
+        
     def update(self, time):
         pass
 

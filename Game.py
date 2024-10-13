@@ -1,5 +1,6 @@
 from datetime import datetime
 from Time import Time
+from Continents import Continent
 import numpy as np
 import random
 import csv
@@ -18,7 +19,12 @@ class Background(pygame.sprite.Sprite):
 
 class Game:
     total_airports = {} 
-
+    continents = {Continent.SA:[],
+                  Continent.EU:[],
+                  Continent.MEA:[],
+                  Continent.AF:[],
+                  Continent.PO:[],
+                  Continent.NA:[]}
     def __init__(self, seed=0):
 
         self.airports_used = set()
@@ -95,7 +101,7 @@ class Game:
                 file1.readline()
                 for line in file1.readlines()[:NUM_AIRPORTS]:
                     csvReader = line.split(",")
-                    airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4])
+                    airport =  Airport(csvReader[8], csvReader[7], csvReader[5], csvReader[4], "EU")
                     Game.total_airports[csvReader[4]] = airport
 
             with open('GlobalAirportDatabase.txt', 'r') as file2:
@@ -118,13 +124,14 @@ class Game:
                 for line in data[:NUM_AIRPORTS]:
                     csvReader = line.split(",")
                     flights_planned = int(str(csvReader[-2])[:2])//4+2
-                    airport =  Airport(flights_planned, csvReader[3], csvReader[1])
+                    airport =  Airport(flights_planned, csvReader[3], csvReader[1], csvReader[7])
                     try:
                         mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
                         airport.pos = mercator
                         Game.total_airports[csvReader[4]] = airport
                     except:
                         pass
+                    Game.continents[airport.continent].append(airport)
 
 
         self.airports = list(Game.total_airports.values())

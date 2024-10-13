@@ -1,4 +1,4 @@
-from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT
+from config import SIMULATED_TIME_STEP, LANDING_DISTANCE, EUROPE, HEIGHT, WIDTH
 import numpy as np
 import math
 from Airport import Airport
