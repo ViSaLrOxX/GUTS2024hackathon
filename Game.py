@@ -201,7 +201,11 @@ class Game:
         found = False
         tries = 0
         while not found and tries < MAX_TRIES:
-            candidate = random.choices(Game.continents[continent], weights=[airport.flights_planned for airport in Game.continents[continent]])
+            try:
+                candidate = random.choices(Game.continents[continent], weights=[airport.departures for airport in Game.continents[continent]])
+            except:
+                pass
+            tries+= 1
 if __name__ == "__main__":
     game1 = Game()
 

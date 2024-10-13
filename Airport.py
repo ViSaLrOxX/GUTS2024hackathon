@@ -7,7 +7,7 @@ class Airport:
                  name: str,
                  code: str,
                  state: AirportState = AirportState.AVAILABLE,
-                 continent: Continent = Continent.EU):
+                 continent: Continent = str):
         self.pos = None
         self.name = name
         # print(arrivals)
@@ -22,25 +22,14 @@ class Airport:
         self.image = pygame.transform.scale(self.image, (20,20))
 
         self.continent = Continent.EU
-        match (continent):
-            case "EU":
-                self.continent = Continent.EU
-                return
-            case "AS":
-                self.continent = Continent.MEA
-                return
-            case "AF":
-                self.continent = Continent.AF
-                return
-            case "SA":
-                self.continent = Continent.SA
-                return
-            case "OC":
-                self.continent = Continent.PO
-                return
-            case "NA":
-                self.continent = Continent.NA
-                return
+        continents = {"EU": Continent.EU,
+                      "AF": Continent.AF,
+                      "AS": Continent.MEA,
+                      "SA": Continent.SA,
+                      "OC": Continent.PO,
+                      "NA": Continent.NA,}
+        
+        self.continent = continents[continent]
         
     def update(self, time):
         pass
