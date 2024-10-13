@@ -258,6 +258,7 @@ class Game:
                 found = True
                 return candidate
             tries+= 1
+        return Airport(0, "SOS", "SOS")
 if __name__ == "__main__":
     game1 = Game()
 

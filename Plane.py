@@ -51,6 +51,7 @@ class Plane:
         except:
             for i in range(len(self.game.planes)):
                 if self.game.planes[i] == self:
+                    Plane.crashes +=1
                     del self.game.planes[i]
                     del self
 
@@ -86,14 +87,14 @@ class Plane:
 
         return PlaneState
 
-    def emergency(self):
+    def emergency(self,i):
         if self.state.IN_FLIGHT & self.delayedArrival > self.expectedArrival + 2:
             self.emergency = True
             self.state = PlaneState.EMERGENCY
             temp = random.randint(0, 100)
             if temp>=40:
                 Plane.crashes +=1
-            # del self
+            del self
 
     def delay_check(self):
         if self.state.IN_FLIGHT:
@@ -101,6 +102,9 @@ class Plane:
             # Math to check delay time
 
     def change_destination(self, airport: Airport, state: PlaneState):
+        if airport.code== "SOS":
+            Plane.crashes +=1 
+            del self
         if state == PlaneState.EMERGENCY and (len(airport.arrivals)> airport.max_capacity or airport.state == AirportState.EMERGENCY):
             self.game.redirect(self,airport)
         else:
