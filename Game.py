@@ -30,7 +30,7 @@ class Game:
         self.readFiles()
         self.seed = 0
         self.generate_planes()
-        print(self.planes)
+        # print([airport.name for airport in self.airports])
 
         pygame.init()
 
@@ -110,13 +110,19 @@ class Game:
         else:
             with open("world-airports.csv", 'r', encoding="utf8") as f:
                 data = f.readlines()[1:]
+                random.shuffle(data)
+                print(data)
                 for line in data[:NUM_AIRPORTS]:
                     csvReader = line.split(",")
-                    airport =  Airport(csvReader[-2][2:], csvReader[-2][:2], csvReader[3], csvReader[1])
+                    flights_planned = int(str(csvReader[-2])[:2])//4+2
+                    airport =  Airport(flights_planned, csvReader[3], csvReader[1])
+                    mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
+                    airport.pos = mercator
                     Game.total_airports[csvReader[4]] = airport
 
+
         self.airports = list(Game.total_airports.values())
-        self.weights = [int(airport.arrivals) for airport in self.airports]
+        self.weights = [int(airport.departures) for airport in self.airports]
 
     def generate_planes(self):
         for count in range(100):
