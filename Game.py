@@ -6,7 +6,7 @@ import csv
 from utils import wgs84_web_mercator_point, rescale_coordinates
 from Airport import Airport
 from Plane import Plane
-from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT
+from config import NUM_PLANES, NUM_AIRPORTS, EUROPE, WIDTH, HEIGHT, MOVEMENT, FPS
 import pygame
 
 class Background(pygame.sprite.Sprite):
@@ -57,6 +57,9 @@ class Game:
                     print(pygame.mouse.get_pos())
 
 
+            if MOVEMENT:
+                self.update()
+
             self.screen.fill((255,255,255)) # fill the screen with white
             self.screen.blit(self.BackGround.image, self.BackGround.rect)
             for airport in self.airports_used:
@@ -69,7 +72,7 @@ class Game:
             
             pygame.display.update() # update the screen
 
-            self.clock.tick(40)
+            self.clock.tick(FPS)
         
     def update(self):
         self.time.set_time(2, 1)
@@ -116,33 +119,40 @@ class Game:
                     csvReader = line.split(",")
                     flights_planned = int(str(csvReader[-2])[:2])//4+2
                     airport =  Airport(flights_planned, csvReader[3], csvReader[1])
-                    mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
-                    airport.pos = mercator
-                    Game.total_airports[csvReader[4]] = airport
+                    try:
+                        mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
+                        airport.pos = mercator
+                        Game.total_airports[csvReader[4]] = airport
+                    except:
+                        pass
 
 
         self.airports = list(Game.total_airports.values())
         self.weights = [int(airport.departures) for airport in self.airports]
 
     def generate_planes(self):
-        for count in range(100):
+        for count in range(81):
             while True:
                 selection = random.choices(self.airports, self.weights, k=1)
-                if selection[0] not in self.airports_used and not selection[0].pos:
-                    continue
+                if selection[0] not in self.airports_used:
+                    break
                 break
             self.airports_used.add(selection[0])
             num_planes = 0
-            while num_planes < int(selection[0].departures):
-                self.planes.append(Plane(destination=random.choice(list(Game.total_airports.values())),
+            total_planes = random.choice(range(selection[0].departures//2))
+            while num_planes < total_planes:
+                plane = Plane(destination=None,
                                         departure=selection[0],
                                         xCoord=selection[0].pos[0],
                                         yCoord=selection[0].pos[1],
-                                        v = 100 if MOVEMENT else 0,
+                                        v = 0.5 if MOVEMENT else 0,
                                         expectedArrival=Time(self.time.hours, self.time.minutes).add_minutes(120),
-                                        ))
+                                        )
+                plane.change_destination(random.choice(list(self.airports_used)))
+                self.planes.append(plane)
                 
                 num_planes +=1 
+        print(len(self.airports_used), num_planes, total_planes)
 
 
 if __name__ == "__main__":
