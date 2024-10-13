@@ -39,7 +39,7 @@ class Plane:
         self.image = pygame.transform.rotate(self.image, math.degrees(self.heading) - 90)
         self.delay = 0
         self.was_redirected = False
-        self.time_expected = self.time_to_reach()
+        # self.time_expected = self.time_to_reach()
          # self.delayedArrival = (self.time_expected + 1200*60)* SIMULATED_TIME_STEP
         self.time_up = 0
   
@@ -64,18 +64,20 @@ class Plane:
         except:
             del self
     
-        self.xCoord += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
-        self.yCoord += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
+        # self.xCoord += SIMULATED_TIME_STEP* self.v* math.cos(self.heading)
+        # self.yCoord += SIMULATED_TIME_STEP* self.v* math.sin(self.heading)
 
-        self.xCoord %= WIDTH
-        self.yCoord %= HEIGHT
+        rock_hard = pygame.math.Vector2(self.xCoord, self.yCoord)
+        rock_hard.move_towards_ip(self.game.rock_solid_locations[self.destination.code], self.v)
+        self.xCoord = rock_hard.x
+        self.yCoord = rock_hard.y
             
         
-        if np.linalg.norm(np.array([self.xCoord - self.destination.pos[0],
-                                self.yCoord - self.destination.pos[1]])) < LANDING_DISTANCE:
+        if np.linalg.norm(np.array([self.xCoord - self.game.rock_solid_locations[self.destination.code].x,
+                                self.yCoord - self.game.rock_solid_locations[self.destination.code].y])) < LANDING_DISTANCE:
             state = PlaneState.LANDED
-            if self.time_up - self.time_expected:
-                Plane.accum_delay += (self.time_up - self.time_expected)
+            # if self.time_up - self.time_expected:
+            #     Plane.accum_delay += (self.time_up - self.time_expected)
 
             self.game.planes[i] = None
             del self

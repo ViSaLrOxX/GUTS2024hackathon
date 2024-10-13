@@ -29,6 +29,7 @@ class Game:
                   Continent.PO:[],
                   Continent.NA:[]}
     def __init__(self, seed=0):
+        self.rock_solid_locations = {}
 
         self.airports_used = set()
         self.time = Time(int(datetime.now().strftime('%H:%M:%S')[:2]), int(datetime.now().strftime('%H:%M:%S')[3:5]))
@@ -171,8 +172,8 @@ class Game:
                     #print(csvReader)
                     flights_planned = int(str(csvReader[-2])[:2])//4+2
                     try:
-                        airport =  Airport(flights_planned, csvReader[3], csvReader[1], AirportState.AVAILABLE, csvReader[7])
                         mercator = rescale_coordinates(float(csvReader[5]), float(csvReader[4]),WIDTH,HEIGHT)
+                        airport =  Airport(flights_planned, csvReader[3], csvReader[1], AirportState.AVAILABLE, csvReader[7], mercator)
                         airport.pos = mercator
                         if airport.pos == None or None in airport.pos:
                             print("broken pos")
@@ -197,7 +198,7 @@ class Game:
                 selection = random.choices(self.airports, self.weights, k=1)
                 if selection[0] not in self.airports_used and selection:
                     break
-                
+            self.rock_solid_locations[selection[0].code] = pygame.math.Vector2(selection[0].pos[0], selection[0].pos[1])
             self.airports_used.add(selection[0])
             #print(self.airports_used)
             Game.continents[selection[0].continent].append(selection[0])
@@ -227,7 +228,7 @@ class Game:
 
     def redirect(self,plane,airport):
         plane.state = PlaneState.EMERGENCY
-        plane.destination = get_nearest_airports()
+        plane.destination = self.get_nearest_airports(plane)[0][0]
         plane.destination.arrivals.append(plane)
 
     def get_nearest_airports(plane: Plane):

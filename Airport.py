@@ -7,8 +7,9 @@ class Airport:
                  name: str,
                  code: str,
                  state: AirportState = AirportState.AVAILABLE,
-                 continent: Continent = "EU"):
-        self.pos = None
+                 continent: Continent = "EU",
+                 pos: tuple = (0,0)):
+        self.pos = pos
         self.name = name
         # print(arrivals)
         self.arrivals = []
