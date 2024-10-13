@@ -63,6 +63,7 @@ class Game:
 
     def game_loop(self):
         movement = MOVEMENT
+        movement = False
         while self.running:
             # handle every event since the last frame.
             for event in pygame.event.get():
@@ -72,12 +73,13 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     print(pygame.mouse.get_pos())
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if movement == False:
-                        mouse_pos = pygame.mouse.get_pos()
-                        adjusted_pos = (mouse_pos[0] - self.typhoon.get_width() // 2, mouse_pos[1] - self.typhoon.get_height() // 2)
-                        self.typhoons.append(Typhoon(adjusted_pos))
-                        if len(self.typhoons) == 3:
-                            movement = True
+                    mouse_pos = pygame.mouse.get_pos()
+                    adjusted_pos = (mouse_pos[0] - self.typhoon.get_width() // 2, mouse_pos[1] - self.typhoon.get_height() // 2)
+                    self.typhoons.append(Typhoon(adjusted_pos))
+                    if len(self.typhoons) == 3:
+                        movement = True
+                    elif len(self.typhoons) > 3:
+                        self.typhoons.pop(0)
                             
             if movement:
                 self.update()
@@ -95,8 +97,10 @@ class Game:
                     plane.draw(self.screen) # draw the bird to the screen
 
             for typhoon in self.typhoons:
-                self.screen.blit(typhoon.image, typhoon.pos)
-                self.typhoon = pygame.transform.rotate(self.typhoon, 90)
+                typhoon.draw(self.screen)
+                # self.screen.blit(typhoon.image, typhoon.pos)
+
+                # self.typhoon = pygame.transform.rotate(typhoon.image, 90)
 
                 x = typhoon.image.get_rect()
                 

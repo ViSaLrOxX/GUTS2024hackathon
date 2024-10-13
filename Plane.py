@@ -82,7 +82,6 @@ class Plane:
 
     def draw(self, surface):
         rot_image = pygame.transform.rotate(self.image, math.degrees(self.heading))
-        #rot_image.set_alpha(0)
         surface.blit(rot_image, to_pygame((self.xCoord, self.yCoord), HEIGHT, 10))
 
 
